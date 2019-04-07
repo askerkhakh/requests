@@ -4,10 +4,10 @@ import com.example.requests.dto.RequestDto;
 import com.example.requests.entity.Request;
 import com.example.requests.service.RequestsService;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/requests/")
@@ -26,6 +26,14 @@ public class RequestsRestController {
         return convertToDto(requestsService.createRequest(convertToEntity(requestDto)));
     }
 
+    @GetMapping(path = "all")
+    public List<RequestDto> getAllRequests() {
+        return requestsService.getAllRequests()
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
     private RequestDto convertToDto(Request request) {
         return modelMapper.map(request, RequestDto.class);
     }
@@ -33,6 +41,5 @@ public class RequestsRestController {
     private Request convertToEntity(RequestDto requestDto) {
         return modelMapper.map(requestDto, Request.class);
     }
-
 
 }
