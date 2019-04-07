@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -23,8 +24,8 @@ public class RequestsServiceImpl implements RequestsService {
     }
 
     @Override
-    public List<Request> getAllRequests() {
-        return requestsRepository.getAll();
+    public List<Request> getAllRequests(List<Map.Entry<String, String>> filterFields, List<String> orderByFields) {
+        return requestsRepository.getRequests(filterFields, orderByFields);
     }
 
     @Override
