@@ -27,4 +27,9 @@ public class RequestsServiceImpl implements RequestsService {
         return requestsRepository.getAll();
     }
 
+    @Override
+    public Request getById(long id) {
+        return requestsRepository.getById(id);
+    }
+
 }

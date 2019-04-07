@@ -10,4 +10,5 @@ public interface RequestsService {
 
     List<Request> getAllRequests();
 
+    Request getById(long id);
 }

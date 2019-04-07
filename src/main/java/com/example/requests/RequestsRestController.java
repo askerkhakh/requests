@@ -34,6 +34,11 @@ public class RequestsRestController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping(path = "{id}")
+    public RequestDto getById(@PathVariable long id) {
+        return convertToDto(requestsService.getById(id));
+    }
+
     private RequestDto convertToDto(Request request) {
         return modelMapper.map(request, RequestDto.class);
     }
