@@ -29,7 +29,7 @@ public class RequestsRepositoryImpl implements RequestsRepository {
     }
 
     @Override
-    public List<Request> getRequests(List<Map.Entry<String, String>> filterFields, List<String> orderByFields) {
+    public List<Request> getRequests(List<Map.Entry<String, String>> filterFields, List<OrderByField> orderByFields) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Request> query = cb.createQuery(Request.class);
         Root<Request> from = query.from(Request.class);
@@ -46,9 +46,20 @@ public class RequestsRepositoryImpl implements RequestsRepository {
 
 
         List<Order> orderList = new ArrayList<>();
-        for (String orderByField : orderByFields) {
-            // TODO: 07.04.19 support descending order
-            orderList.add(cb.asc(getPath(from, orderByField)));
+        for (OrderByField orderByField : orderByFields) {
+            Path path = getPath(from, orderByField.getField());
+            Order order;
+            switch (orderByField.getDirection()) {
+                case ASCENDING:
+                    order = cb.asc(path);
+                    break;
+                case DESCENDING:
+                    order = cb.desc(path);
+                    break;
+                default:
+                    throw new AssertionError("Incorrect direction");
+            }
+            orderList.add(order);
         }
         query.orderBy(orderList);
 

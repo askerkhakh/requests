@@ -2,12 +2,12 @@ package com.example.requests;
 
 import com.example.requests.dto.RequestDto;
 import com.example.requests.entity.Request;
+import com.example.requests.repository.OrderByField;
 import com.example.requests.service.RequestsService;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,10 +38,8 @@ public class RequestsRestController {
         // TODO: 07.04.19 It's not very safe and flexible to use request parameters for filter and order settings, but I'll
         //  leave it as is for simplicity.
         String orderByParam = params.get(ORDER_BY_PARAM);
-        List<String> orderByFields = Collections.emptyList();
-        if (orderByParam != null) {
-            orderByFields = Arrays.asList(orderByParam.split(","));
-        }
+        List<OrderByField> orderByFields = orderByParamToOrderByFields(orderByParam);
+
         List<Map.Entry<String, String>> filterFields = params.entrySet().stream()
                 .filter(entry -> !entry.getKey().equals(ORDER_BY_PARAM))
                 .collect(Collectors.toList());
@@ -49,6 +47,34 @@ public class RequestsRestController {
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    private List<OrderByField> orderByParamToOrderByFields(String orderByParam) {
+        List<OrderByField> orderByFields = new ArrayList<>();
+        if (orderByParam != null) {
+            for (String fieldString : orderByParam.split(",")) {
+                if (!fieldString.isEmpty()) {
+                    String field;
+                    OrderByField.Direction direction;
+                    switch (fieldString.charAt(0)) {
+                        case '+':
+                            field = fieldString.substring(1);
+                            direction = OrderByField.Direction.ASCENDING;
+                            break;
+                        case '-':
+                            field = fieldString.substring(1);
+                            direction = OrderByField.Direction.DESCENDING;
+                            break;
+                        default:
+                            field = fieldString;
+                            direction = OrderByField.Direction.ASCENDING;
+                            break;
+                    }
+                    orderByFields.add(new OrderByField(field, direction));
+                }
+            }
+        }
+        return orderByFields;
     }
 
     @GetMapping(path = "/{id}")

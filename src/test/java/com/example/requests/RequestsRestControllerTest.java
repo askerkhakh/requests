@@ -86,6 +86,35 @@ public class RequestsRestControllerTest {
 
     @Test
     @DirtiesContext
+    public void getRequestsOrderedByDateTest() {
+        RequestDto request1 = buildTestRequest();
+        request1.setDate(LocalDate.of(2000, 1, 1));
+        RequestDto request2 = buildTestRequest();
+        request2.setDate(LocalDate.of(2000, 1, 2));
+        RequestDto request3 = buildTestRequest();
+        request3.setDate(LocalDate.of(2000, 1, 3));
+        List<RequestDto> requests = Arrays.asList(request1, request2, request3);
+        List<RequestDto> postedRequests = new ArrayList<>();
+        for (int i = requests.size(); i-- > 0;) {
+            postedRequests.add(0, restController.postRequest(requests.get(i)));
+        }
+        Map<String, String> params = new HashMap<>();
+        params.put(RequestsRestController.ORDER_BY_PARAM, "date");
+        List<RequestDto> fetchedRequests = restController.getRequests(params);
+        assertEquals(postedRequests, fetchedRequests);
+
+        params.put(RequestsRestController.ORDER_BY_PARAM, "+date");
+        List<RequestDto> fetchedRequests2 = restController.getRequests(params);
+        assertEquals(postedRequests, fetchedRequests2);
+
+        params.put(RequestsRestController.ORDER_BY_PARAM, "-date");
+        List<RequestDto> fetchedRequests3 = restController.getRequests(params);
+        Collections.reverse(postedRequests);
+        assertEquals(postedRequests, fetchedRequests3);
+    }
+
+    @Test
+    @DirtiesContext
     public void getRequestsFilteredByNameTest() {
         RequestDto request1 = buildTestRequest();
         request1.getPerson().setName("a");

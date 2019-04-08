@@ -9,7 +9,7 @@ public interface RequestsRepository {
 
     Request save(Request request);
 
-    List<Request> getRequests(List<Map.Entry<String, String>> filterFields, List<String> orderByFields);
+    List<Request> getRequests(List<Map.Entry<String, String>> filterFields, List<OrderByField> orderByFields);
 
     Request getById(long id, boolean fetchFull);
 }
