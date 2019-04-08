@@ -3,6 +3,7 @@ package com.example.requests.dto;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,7 +14,7 @@ public class RequestDto {
 
     private PersonDto person;
 
-    private List<DocumentDto> documents;
+    private List<DocumentDto> documents = new ArrayList<>();
 
     private String serviceName;
 

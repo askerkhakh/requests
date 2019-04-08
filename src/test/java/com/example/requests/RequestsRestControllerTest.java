@@ -1,5 +1,6 @@
 package com.example.requests;
 
+import com.example.requests.dto.DocumentDto;
 import com.example.requests.dto.PersonDto;
 import com.example.requests.dto.RequestDto;
 import org.junit.Test;
@@ -180,5 +181,18 @@ public class RequestsRestControllerTest {
         restController.patchRequest(id, RequestsRestController.PROCESSED);
         requestDto.setStatus(RequestsRestController.PROCESSED);
         assertEquals(requestDto, restController.getRequestById(id));
+    }
+
+    @Test
+    @DirtiesContext
+    public void documentsTest() {
+        RequestDto requestDto = buildTestRequest();
+        DocumentDto documentDto = new DocumentDto();
+        documentDto.setData("dGVzdCBiYXNlNjQgc3RyaW5n");
+        requestDto.getDocuments().add(documentDto);
+        RequestDto postedRequest = restController.postRequest(requestDto);
+        // postedRequest does not contain documents for performance
+        postedRequest.setDocuments(requestDto.getDocuments());
+        assertEquals(postedRequest, restController.getRequestById(requireNonNull(postedRequest.getId())));
     }
 }

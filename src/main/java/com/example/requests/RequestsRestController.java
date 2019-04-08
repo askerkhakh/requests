@@ -30,7 +30,7 @@ public class RequestsRestController {
 
     @PostMapping
     public RequestDto postRequest(@RequestBody RequestDto requestDto) {
-        return convertToDto(requestsService.createRequest(convertToEntity(requestDto)));
+        return convertToDto(requestsService.createRequest(convertToFullEntity(requestDto)));
     }
 
     @GetMapping
@@ -79,7 +79,7 @@ public class RequestsRestController {
 
     @GetMapping(path = "/{id}")
     public RequestDto getRequestById(@PathVariable long id) {
-        return fullModelMapper.map(requestsService.getRequestById(id), RequestDto.class);
+        return convertToFullDto(requestsService.getRequestById(id));
     }
 
     @PatchMapping(path = "/{id}")
@@ -93,8 +93,12 @@ public class RequestsRestController {
         return modelMapper.map(request, RequestDto.class);
     }
 
-    private Request convertToEntity(RequestDto requestDto) {
-        return modelMapper.map(requestDto, Request.class);
+    private RequestDto convertToFullDto(Request request) {
+        return fullModelMapper.map(request, RequestDto.class);
+    }
+
+    private Request convertToFullEntity(RequestDto requestDto) {
+        return fullModelMapper.map(requestDto, Request.class);
     }
 
 }
