@@ -2,7 +2,6 @@ package com.example.requests;
 
 import com.example.requests.dto.PersonDto;
 import com.example.requests.dto.RequestDto;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +108,6 @@ public class RequestsRestControllerTest {
         assertEquals(requestDto, foundRequestDto);
     }
 
-    @Ignore
     @Test
     @DirtiesContext
     public void getRequestsFilteredByDateTest() {
@@ -125,4 +123,19 @@ public class RequestsRestControllerTest {
         List<RequestDto> fetchedRequests = restController.getRequests(params);
         assertEquals(Collections.singletonList(postedRequests.get(0)), fetchedRequests);
     }
+
+    @Test
+    @DirtiesContext
+    public void getRequestsFilteredByStatusTest() {
+        List<RequestDto> requests = Arrays.asList(buildTestRequest(), buildTestRequest(), buildTestRequest());
+        List<RequestDto> postedRequests = new ArrayList<>();
+        for (RequestDto request : requests) {
+            postedRequests.add(restController.postRequest(request));
+        }
+        Map<String, String> params = new HashMap<>();
+        params.put("status", "new");
+        List<RequestDto> fetchedRequests = restController.getRequests(params);
+        assertEquals(new HashSet<>(postedRequests), new HashSet<>(fetchedRequests));
+    }
+
 }

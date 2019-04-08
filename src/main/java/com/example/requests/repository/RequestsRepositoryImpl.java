@@ -1,11 +1,14 @@
 package com.example.requests.repository;
 
 import com.example.requests.entity.Request;
+import com.example.requests.entity.RequestStatus;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +38,9 @@ public class RequestsRepositoryImpl implements RequestsRepository {
         List<Predicate> filterPredicates = new ArrayList<>();
         List<ParameterValuePair> parameterValuePairs = new ArrayList<>();
         for (Map.Entry<String, String> filterField : filterFields) {
-            ParameterExpression<String> parameter = cb.parameter(String.class);
-            parameterValuePairs.add(new ParameterValuePair(parameter, filterField.getValue()));
-            filterPredicates.add(cb.equal(getPath(from, filterField.getKey()), parameter));
+            ParameterValuePair parameterValuePair = parameterValuePairFromStrings(cb, filterField.getKey(), filterField.getValue());
+            parameterValuePairs.add(parameterValuePair);
+            filterPredicates.add(cb.equal(getPath(from, filterField.getKey()), parameterValuePair.parameter));
         }
         query.where(filterPredicates.toArray(new Predicate[0]));
 
@@ -51,9 +54,32 @@ public class RequestsRepositoryImpl implements RequestsRepository {
 
         TypedQuery<Request> typedQuery = entityManager.createQuery(query);
         for (ParameterValuePair parameterValuePair : parameterValuePairs) {
-            typedQuery.setParameter(parameterValuePair.parameter, parameterValuePair.value);
+            uncheckedSetParameter(typedQuery, parameterValuePair);
         }
         return typedQuery.getResultList();
+    }
+
+    @SuppressWarnings(value = "unchecked")
+    private void uncheckedSetParameter(TypedQuery<Request> typedQuery, ParameterValuePair parameterValuePair) {
+        typedQuery.setParameter(parameterValuePair.parameter, parameterValuePair.value);
+    }
+
+    private static ParameterValuePair parameterValuePairFromStrings(CriteriaBuilder criteriaBuilder, String fieldName, String value) {
+        // TODO: 08.04.19 We can use here reflection for determining the type of field (and so the type of parameter),
+        //  but for simplicity lets keep it hardcoded
+        switch (fieldName) {
+            case "person.surname":
+            case "person.name":
+            case "person.patronymic":
+            case "serviceName":
+                return new ParameterValuePair<>(criteriaBuilder.parameter(String.class), value);
+            case "date":
+                return new ParameterValuePair<>(criteriaBuilder.parameter(LocalDate.class), LocalDate.parse(value, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            case "status":
+                return new ParameterValuePair<>(criteriaBuilder.parameter(RequestStatus.class), RequestStatus.valueOf(value.toUpperCase()));
+            default:
+                throw new AssertionError(String.format("Parameter conversion for field %s does not supported", fieldName));
+        }
     }
 
     private Path getPath(Root<Request> from, String field) {
@@ -78,11 +104,11 @@ public class RequestsRepositoryImpl implements RequestsRepository {
         return request;
     }
 
-    private class ParameterValuePair {
-        private final ParameterExpression<String> parameter;
-        private final String value;
+    private static class ParameterValuePair<T> {
+        private final ParameterExpression<T> parameter;
+        private final T value;
 
-        ParameterValuePair(ParameterExpression<String> parameter, String value) {
+        ParameterValuePair(ParameterExpression<T> parameter, T value) {
             this.parameter = parameter;
             this.value = value;
         }

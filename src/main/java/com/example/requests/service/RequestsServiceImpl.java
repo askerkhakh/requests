@@ -1,6 +1,7 @@
 package com.example.requests.service;
 
 import com.example.requests.entity.Request;
+import com.example.requests.entity.RequestStatus;
 import com.example.requests.repository.RequestsRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class RequestsServiceImpl implements RequestsService {
 
     @Override
     public Request createRequest(Request request) {
+        request.setStatus(RequestStatus.NEW);
         return requestsRepository.save(request);
     }
 

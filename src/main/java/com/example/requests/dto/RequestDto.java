@@ -19,18 +19,24 @@ public class RequestDto {
 
     private LocalDate date;
 
+    private String status;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RequestDto that = (RequestDto) o;
         return Objects.equals(id, that.id) &&
-                person.equals(that.person);
+                Objects.equals(person, that.person) &&
+                Objects.equals(documents, that.documents) &&
+                Objects.equals(serviceName, that.serviceName) &&
+                Objects.equals(date, that.date) &&
+                Objects.equals(status, that.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, person);
+        return Objects.hash(id, person, documents, serviceName, date, status);
     }
 
     public PersonDto getPerson() {
@@ -71,5 +77,13 @@ public class RequestDto {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
