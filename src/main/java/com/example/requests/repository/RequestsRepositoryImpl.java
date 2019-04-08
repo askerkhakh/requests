@@ -65,13 +65,17 @@ public class RequestsRepositoryImpl implements RequestsRepository {
     }
 
     @Override
-    public Request getById(long id) {
+    public Request getById(long id, boolean fetchFull) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Request> query = cb.createQuery(Request.class);
         Root<Request> from = query.from(Request.class);
         ParameterExpression<Long> parameter = cb.parameter(Long.class);
         query.select(from).where(cb.equal(from.get("id"), parameter));
-        return entityManager.createQuery(query).setParameter(parameter, id).getSingleResult();
+        Request request = entityManager.createQuery(query).setParameter(parameter, id).getSingleResult();
+        if (fetchFull) {
+            request.getDocuments().size();
+        }
+        return request;
     }
 
     private class ParameterValuePair {

@@ -30,7 +30,7 @@ public class RequestsServiceImpl implements RequestsService {
 
     @Override
     public Request getById(long id) {
-        return requestsRepository.getById(id);
+        return requestsRepository.getById(id, true);
     }
 
 }

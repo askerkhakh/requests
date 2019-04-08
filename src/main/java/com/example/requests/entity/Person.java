@@ -1,6 +1,7 @@
 package com.example.requests.entity;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 
 @Embeddable
 public class Person {
@@ -8,6 +9,9 @@ public class Person {
     private String surname;
     private String name;
     private String patronymic;
+
+    @Embedded
+    private Passport passport;
 
     public String getSurname() {
         return surname;
@@ -32,4 +36,5 @@ public class Person {
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
     }
+
 }

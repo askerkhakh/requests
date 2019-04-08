@@ -2,6 +2,7 @@ package com.example.requests;
 
 import com.example.requests.dto.PersonDto;
 import com.example.requests.dto.RequestDto;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -34,6 +36,8 @@ public class RequestsRestControllerTest {
         personDto.setName("name");
         personDto.setPatronymic("patronymic");
         requestDto.setPerson(personDto);
+        requestDto.setDate(LocalDate.now());
+        requestDto.setServiceName("serviceName");
         return requestDto;
     }
 
@@ -103,5 +107,22 @@ public class RequestsRestControllerTest {
         assertNotNull(requestDto.getId());
         RequestDto foundRequestDto = restController.getById(requestDto.getId());
         assertEquals(requestDto, foundRequestDto);
+    }
+
+    @Ignore
+    @Test
+    @DirtiesContext
+    public void getRequestsFilteredByDateTest() {
+        RequestDto request1 = buildTestRequest();
+        request1.setDate(LocalDate.of(2000, 1, 1));
+        List<RequestDto> requests = Arrays.asList(request1, buildTestRequest(), buildTestRequest());
+        List<RequestDto> postedRequests = new ArrayList<>();
+        for (RequestDto request : requests) {
+            postedRequests.add(restController.postRequest(request));
+        }
+        Map<String, String> params = new HashMap<>();
+        params.put("date", "01/01/2000");
+        List<RequestDto> fetchedRequests = restController.getAllRequests(params);
+        assertEquals(Collections.singletonList(postedRequests.get(0)), fetchedRequests);
     }
 }

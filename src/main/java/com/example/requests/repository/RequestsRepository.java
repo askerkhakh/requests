@@ -11,5 +11,5 @@ public interface RequestsRepository {
 
     List<Request> getRequests(List<Map.Entry<String, String>> filterFields, List<String> orderByFields);
 
-    Request getById(long id);
+    Request getById(long id, boolean fetchFull);
 }

@@ -18,10 +18,12 @@ public class RequestsRestController {
 
     private static final String ORDER_BY_PARAM = "orderBy";
     private final ModelMapper modelMapper;
+    private final ModelMapper fullModelMapper;
     private final RequestsService requestsService;
 
-    public RequestsRestController(ModelMapper modelMapper, RequestsService requestsService) {
+    public RequestsRestController(ModelMapper modelMapper, ModelMapper fullModelMapper, RequestsService requestsService) {
         this.modelMapper = modelMapper;
+        this.fullModelMapper = fullModelMapper;
         this.requestsService = requestsService;
     }
 
@@ -50,7 +52,7 @@ public class RequestsRestController {
 
     @GetMapping(path = "{id}")
     public RequestDto getById(@PathVariable long id) {
-        return convertToDto(requestsService.getById(id));
+        return fullModelMapper.map(requestsService.getById(id), RequestDto.class);
     }
 
     private RequestDto convertToDto(Request request) {

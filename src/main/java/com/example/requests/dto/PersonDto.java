@@ -8,6 +8,24 @@ public class PersonDto {
     private String name;
     private String patronymic;
 
+    private PassportDto passport;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PersonDto personDto = (PersonDto) o;
+        return Objects.equals(surname, personDto.surname) &&
+                Objects.equals(name, personDto.name) &&
+                Objects.equals(patronymic, personDto.patronymic) &&
+                Objects.equals(passport, personDto.passport);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(surname, name, patronymic, passport);
+    }
+
     public String getSurname() {
         return surname;
     }
@@ -32,18 +50,11 @@ public class PersonDto {
         this.patronymic = patronymic;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PersonDto personDto = (PersonDto) o;
-        return Objects.equals(surname, personDto.surname) &&
-                Objects.equals(name, personDto.name) &&
-                Objects.equals(patronymic, personDto.patronymic);
+    public PassportDto getPassport() {
+        return passport;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(surname, name, patronymic);
+    public void setPassport(PassportDto passport) {
+        this.passport = passport;
     }
 }
