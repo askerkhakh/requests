@@ -24,12 +24,12 @@ public class RequestsServiceImpl implements RequestsService {
     }
 
     @Override
-    public List<Request> getAllRequests(List<Map.Entry<String, String>> filterFields, List<String> orderByFields) {
+    public List<Request> getRequests(List<Map.Entry<String, String>> filterFields, List<String> orderByFields) {
         return requestsRepository.getRequests(filterFields, orderByFields);
     }
 
     @Override
-    public Request getById(long id) {
+    public Request getRequestById(long id) {
         return requestsRepository.getById(id, true);
     }
 

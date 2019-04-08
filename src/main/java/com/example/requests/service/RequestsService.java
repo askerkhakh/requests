@@ -9,7 +9,7 @@ public interface RequestsService {
 
     Request createRequest(Request request);
 
-    List<Request> getAllRequests(List<Map.Entry<String, String>> filterFields, List<String> orderByFields);
+    List<Request> getRequests(List<Map.Entry<String, String>> filterFields, List<String> orderByFields);
 
-    Request getById(long id);
+    Request getRequestById(long id);
 }

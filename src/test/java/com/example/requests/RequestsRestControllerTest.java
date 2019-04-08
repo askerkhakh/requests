@@ -55,7 +55,7 @@ public class RequestsRestControllerTest {
         for (int i = 0; i < count - 1; i++) {
             requests.add(postRequest());
         }
-        List<RequestDto> allRequests = restController.getAllRequests(Collections.emptyMap());
+        List<RequestDto> allRequests = restController.getRequests(Collections.emptyMap());
 
         assertEquals(new HashSet<>(requests), new HashSet<>(allRequests));
     }
@@ -76,7 +76,7 @@ public class RequestsRestControllerTest {
         }
         Map<String, String> params = new HashMap<>();
         params.put("orderBy", "person.name");
-        List<RequestDto> fetchedRequests = restController.getAllRequests(params);
+        List<RequestDto> fetchedRequests = restController.getRequests(params);
         assertEquals(postedRequests, fetchedRequests);
     }
 
@@ -96,16 +96,16 @@ public class RequestsRestControllerTest {
         }
         Map<String, String> params = new HashMap<>();
         params.put("person.name", "b");
-        List<RequestDto> fetchedRequests = restController.getAllRequests(params);
+        List<RequestDto> fetchedRequests = restController.getRequests(params);
         assertEquals(Collections.singletonList(postedRequests.get(1)), fetchedRequests);
     }
 
     @Test
     @DirtiesContext
-    public void getByIdTest() {
+    public void getRequestByIdTest() {
         RequestDto requestDto = postRequest();
         assertNotNull(requestDto.getId());
-        RequestDto foundRequestDto = restController.getById(requestDto.getId());
+        RequestDto foundRequestDto = restController.getRequestById(requestDto.getId());
         assertEquals(requestDto, foundRequestDto);
     }
 
@@ -122,7 +122,7 @@ public class RequestsRestControllerTest {
         }
         Map<String, String> params = new HashMap<>();
         params.put("date", "01/01/2000");
-        List<RequestDto> fetchedRequests = restController.getAllRequests(params);
+        List<RequestDto> fetchedRequests = restController.getRequests(params);
         assertEquals(Collections.singletonList(postedRequests.get(0)), fetchedRequests);
     }
 }

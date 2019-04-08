@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/requests/")
+@RequestMapping("/requests")
 public class RequestsRestController {
 
     private static final String ORDER_BY_PARAM = "orderBy";
@@ -27,13 +27,13 @@ public class RequestsRestController {
         this.requestsService = requestsService;
     }
 
-    @PostMapping(path = "post")
+    @PostMapping
     public RequestDto postRequest(@RequestBody RequestDto requestDto) {
         return convertToDto(requestsService.createRequest(convertToEntity(requestDto)));
     }
 
-    @GetMapping(path = "all")
-    public List<RequestDto> getAllRequests(@RequestParam Map<String, String> params) {
+    @GetMapping
+    public List<RequestDto> getRequests(@RequestParam Map<String, String> params) {
         // TODO: 07.04.19 It's not very safe and flexible to use request parameters for filter and order settings, but I'll
         //  leave it as is for simplicity.
         String orderByParam = params.get(ORDER_BY_PARAM);
@@ -44,15 +44,15 @@ public class RequestsRestController {
         List<Map.Entry<String, String>> filterFields = params.entrySet().stream()
                 .filter(entry -> !entry.getKey().equals(ORDER_BY_PARAM))
                 .collect(Collectors.toList());
-        return requestsService.getAllRequests(filterFields, orderByFields)
+        return requestsService.getRequests(filterFields, orderByFields)
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(path = "{id}")
-    public RequestDto getById(@PathVariable long id) {
-        return fullModelMapper.map(requestsService.getById(id), RequestDto.class);
+    @GetMapping(path = "/{id}")
+    public RequestDto getRequestById(@PathVariable long id) {
+        return fullModelMapper.map(requestsService.getRequestById(id), RequestDto.class);
     }
 
     private RequestDto convertToDto(Request request) {
