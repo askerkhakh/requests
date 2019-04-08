@@ -12,4 +12,6 @@ public interface RequestsService {
     List<Request> getRequests(List<Map.Entry<String, String>> filterFields, List<String> orderByFields);
 
     Request getRequestById(long id);
+
+    void setRequestProcessed(long id);
 }

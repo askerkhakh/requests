@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/requests")
 public class RequestsRestController {
 
-    private static final String ORDER_BY_PARAM = "orderBy";
+    public static final String ORDER_BY_PARAM = "order_by";
+    public static final String PROCESSED = "processed";
     private final ModelMapper modelMapper;
     private final ModelMapper fullModelMapper;
     private final RequestsService requestsService;
@@ -53,6 +54,13 @@ public class RequestsRestController {
     @GetMapping(path = "/{id}")
     public RequestDto getRequestById(@PathVariable long id) {
         return fullModelMapper.map(requestsService.getRequestById(id), RequestDto.class);
+    }
+
+    @PatchMapping(path = "/{id}")
+    public void patchRequest(@PathVariable long id, @RequestParam(value = "status") String status) {
+        if (PROCESSED.equals(status)) {
+            requestsService.setRequestProcessed(id);
+        }
     }
 
     private RequestDto convertToDto(Request request) {

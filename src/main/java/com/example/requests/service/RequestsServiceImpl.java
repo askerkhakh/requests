@@ -35,4 +35,11 @@ public class RequestsServiceImpl implements RequestsService {
         return requestsRepository.getById(id, true);
     }
 
+    @Override
+    public void setRequestProcessed(long id) {
+        Request request = requestsRepository.getById(id, false);
+        request.setStatus(RequestStatus.PROCESSED);
+        requestsRepository.save(request);
+    }
+
 }

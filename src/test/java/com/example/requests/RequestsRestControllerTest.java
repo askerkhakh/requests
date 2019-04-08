@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 import java.util.*;
 
+import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -24,8 +25,12 @@ public class RequestsRestControllerTest {
     @Autowired
     private RequestsRestController restController;
 
-    public RequestDto postRequest() {
-        return restController.postRequest(buildTestRequest());
+    public RequestDto postRequest(boolean full) {
+        RequestDto requestDto = restController.postRequest(buildTestRequest());
+        if (full) {
+            requestDto.setDocuments(Collections.emptyList());
+        }
+        return requestDto;
     }
 
     private RequestDto buildTestRequest() {
@@ -43,7 +48,7 @@ public class RequestsRestControllerTest {
     @Test
     @DirtiesContext
     public void postRequestTest() {
-        RequestDto requestDto = postRequest();
+        RequestDto requestDto = postRequest(false);
         assertNotNull(requestDto.getId());
     }
 
@@ -52,7 +57,7 @@ public class RequestsRestControllerTest {
         int count = new Random().nextInt(100);
         List<RequestDto> requests = new ArrayList<>();
         for (int i = 0; i < count - 1; i++) {
-            requests.add(postRequest());
+            requests.add(postRequest(false));
         }
         List<RequestDto> allRequests = restController.getRequests(Collections.emptyMap());
 
@@ -74,7 +79,7 @@ public class RequestsRestControllerTest {
             postedRequests.add(0, restController.postRequest(requests.get(i)));
         }
         Map<String, String> params = new HashMap<>();
-        params.put("orderBy", "person.name");
+        params.put(RequestsRestController.ORDER_BY_PARAM, "person.name");
         List<RequestDto> fetchedRequests = restController.getRequests(params);
         assertEquals(postedRequests, fetchedRequests);
     }
@@ -102,7 +107,7 @@ public class RequestsRestControllerTest {
     @Test
     @DirtiesContext
     public void getRequestByIdTest() {
-        RequestDto requestDto = postRequest();
+        RequestDto requestDto = postRequest(true);
         assertNotNull(requestDto.getId());
         RequestDto foundRequestDto = restController.getRequestById(requestDto.getId());
         assertEquals(requestDto, foundRequestDto);
@@ -138,4 +143,13 @@ public class RequestsRestControllerTest {
         assertEquals(new HashSet<>(postedRequests), new HashSet<>(fetchedRequests));
     }
 
+    @Test
+    @DirtiesContext
+    public void patchRequestTest() {
+        RequestDto requestDto = postRequest(true);
+        Long id = requireNonNull(requestDto.getId());
+        restController.patchRequest(id, RequestsRestController.PROCESSED);
+        requestDto.setStatus(RequestsRestController.PROCESSED);
+        assertEquals(requestDto, restController.getRequestById(id));
+    }
 }
