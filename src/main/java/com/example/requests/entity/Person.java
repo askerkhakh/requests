@@ -37,4 +37,11 @@ public class Person {
         this.patronymic = patronymic;
     }
 
+    public Passport getPassport() {
+        return passport;
+    }
+
+    public void setPassport(Passport passport) {
+        this.passport = passport;
+    }
 }

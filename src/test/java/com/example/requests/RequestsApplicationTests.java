@@ -30,8 +30,14 @@ public class RequestsApplicationTests {
             "  \"person\": {\n" +
             "    \"surname\": \"Иванов\",\n" +
             "    \"name\": \"Иван\",\n" +
-            "    \"patronymic\": \"Иванович\"\n" +
-            "  }\n" +
+            "    \"patronymic\": \"Иванович\",\n" +
+            "    \"passport\": {\n" +
+            "      \"series\": \"01-01\",\n" +
+            "      \"number\": \"123456\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"serviceName\": \"Имя услуги\",\n" +
+            "  \"date\": \"31/12/2018\"\n" +
             "}";
 
     @Test
