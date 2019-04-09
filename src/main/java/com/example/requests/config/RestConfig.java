@@ -9,6 +9,8 @@ import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +46,7 @@ public class RestConfig {
                         )
                         .map(Request::getDocuments, RequestDto::setDocuments)
         );
-        modelMapper.createTypeMap(RequestDto.class, Request.class).addMappings(
+        modelMapper.getTypeMap(RequestDto.class, Request.class).addMappings(
                 mapping -> mapping
                         .using(ctx -> ((List<DocumentDto>) ctx.getSource())
                                 .stream()
@@ -66,9 +68,20 @@ public class RestConfig {
 
     private ModelMapper defaultModleMapper() {
         ModelMapper modelMapper = new ModelMapper();
-        TypeMap<Request, RequestDto> typeMap = modelMapper.createTypeMap(Request.class, RequestDto.class);
+        TypeMap<Request, RequestDto> requestToRequestDtoTypeMap = modelMapper.createTypeMap(Request.class, RequestDto.class);
+        TypeMap<RequestDto, Request> requestDtoToRequestTypeMap = modelMapper.createTypeMap(RequestDto.class, Request.class);
         // status property is mapped only one way: from entity to dto
-        typeMap.addMappings(mapping -> mapping.using(ctx -> ctx.getSource().toString().toLowerCase()).map(Request::getStatus, RequestDto::setStatus));
+        requestToRequestDtoTypeMap.addMappings(mapping -> mapping.using(ctx -> ctx.getSource().toString().toLowerCase()).map(Request::getStatus, RequestDto::setStatus));
+        requestDtoToRequestTypeMap.addMappings(
+                mapping -> mapping
+                        .using(ctx -> LocalDate.parse(ctx.getSource().toString(), DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                        .map(RequestDto::getDate, Request::setDate)
+        );
+        requestToRequestDtoTypeMap.addMappings(
+                mapping -> mapping
+                        .using(ctx -> ((LocalDate) ctx.getSource()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                        .map(Request::getDate, RequestDto::setDate)
+        );
         return modelMapper;
     }
 

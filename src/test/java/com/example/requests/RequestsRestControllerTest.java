@@ -12,6 +12,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
@@ -41,7 +42,7 @@ public class RequestsRestControllerTest {
         personDto.setName("name");
         personDto.setPatronymic("patronymic");
         requestDto.setPerson(personDto);
-        requestDto.setDate(LocalDate.now());
+        requestDto.setDate(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         requestDto.setServiceName("serviceName");
         return requestDto;
     }
@@ -89,11 +90,11 @@ public class RequestsRestControllerTest {
     @DirtiesContext
     public void getRequestsOrderedByDateTest() {
         RequestDto request1 = buildTestRequest();
-        request1.setDate(LocalDate.of(2000, 1, 1));
+        request1.setDate("01/01/2000");
         RequestDto request2 = buildTestRequest();
-        request2.setDate(LocalDate.of(2000, 1, 2));
+        request2.setDate("02/01/2000");
         RequestDto request3 = buildTestRequest();
-        request3.setDate(LocalDate.of(2000, 1, 3));
+        request3.setDate("03/01/2000");
         List<RequestDto> requests = Arrays.asList(request1, request2, request3);
         List<RequestDto> postedRequests = new ArrayList<>();
         for (int i = requests.size(); i-- > 0;) {
@@ -147,7 +148,7 @@ public class RequestsRestControllerTest {
     @DirtiesContext
     public void getRequestsFilteredByDateTest() {
         RequestDto request1 = buildTestRequest();
-        request1.setDate(LocalDate.of(2000, 1, 1));
+        request1.setDate("01/01/2000");
         List<RequestDto> requests = Arrays.asList(request1, buildTestRequest(), buildTestRequest());
         List<RequestDto> postedRequests = new ArrayList<>();
         for (RequestDto request : requests) {

@@ -2,7 +2,6 @@ package com.example.requests.dto;
 
 import org.springframework.lang.Nullable;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +17,7 @@ public class RequestDto {
 
     private String serviceName;
 
-    private LocalDate date;
+    private String date;
 
     private String status;
 
@@ -72,11 +71,11 @@ public class RequestDto {
         this.serviceName = serviceName;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
