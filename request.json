@@ -1,0 +1,18 @@
+{
+  "person": {
+    "surname": "Иванов",
+    "name": "Иван",
+    "patronymic": "Иванович",
+    "passport": {
+      "series": "01-01",
+      "number": "123456"
+    }
+  },
+  "documents": [
+    {
+      "data": "dGVzdCBiYXNlNjQgc3RyaW5n"
+    }
+  ],
+  "serviceName": "Имя услуги",
+  "date": "31/12/2018"
+}

@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/requests")
 public class RequestsRestController {
+    // TODO: 08.04.19 Error handling and correct status codes
 
     public static final String ORDER_BY_PARAM = "order_by";
     public static final String PROCESSED = "processed";
